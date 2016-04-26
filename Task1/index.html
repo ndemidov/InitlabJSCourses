@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"></meta>
+    <title>Task 1</title>
+    <script>
+      (function() {
+        var resultBlock;
+
+        window.onload = function() {
+          resultBlock = document.getElementById("result");
+          document.getElementById("countBtn").addEventListener("click", handleSum);
+        }
+
+        /**
+         * Handles count of two numbers sum.
+         */
+        function handleSum() {
+          var numA = parseNumber( document.getElementById("numA").value );
+          var numB = parseNumber( document.getElementById("numB").value );
+
+          if (numA !== false && numB !== false) {
+            var sum = countSum(numA, numB);
+            resultBlock.innerHTML = 'Result: ' + sum;
+          } else {
+            resultBlock.innerHTML = 'Error! Make sure provided numbers are legit and try again';
+          }
+        }
+
+        /**
+         * Validates and parses provided number.
+         *
+         * @param {string} num Raw string with number to be parsed.
+         * @return {number} Parsed number.
+         * @return {boolean} False if input param was not a number.
+         */
+        function parseNumber(num) {
+          if (num === '') {
+            return false;
+          }
+          var parsedNum = +num;
+          if (isNaN(parsedNum)) {
+            parsedNum = false;
+          }
+          return parsedNum;
+        }
+
+        /**
+         * Counts sum of two numbers.
+         *
+         * @param {number} a First number to sum.
+         * @param {number} a Second number to sum.
+         * @return {boolean} Sum of two numbers.
+         */
+        function countSum(a, b) {
+          return a + b;
+        }
+
+      })();
+    </script>
+  </head>
+  <body>
+    <p>Hi there! Would you kindly enter two numbers and I'll give you their sum!</p>
+    <div>Number A: <input type="text" id="numA" size="3"></div>
+    <div>Number B: <input type="text" id="numB" size="3"></div>
+    <br>
+    <button id="countBtn">Count sum</button>
+    <br>
+    <br>
+    <div id="result"></div>
+  </body>
+</html>
