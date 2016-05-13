@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"></meta>
+    <title>Task 1</title>
+    <script>
+
+      (function() {
+        var resultElem;
+
+        var obj = {
+          className: ''
+        };
+
+        window.onload = function() {
+          resultElem = document.getElementById("result");
+          refreshResult();
+          document.getElementById("btnAdd").addEventListener("click", addToClassName);
+        };
+
+        /**
+         * Updates DOM with className value.
+         */
+        function refreshResult() {
+          resultElem.innerHTML = obj.className;
+        }
+
+        /**
+         * Adds new value to className.
+         */
+        function addToClassName(event) {
+          var value = document.getElementById("adCls").value;
+          if (!value) {
+            console.log('Empty value, nothing to add');
+            return;
+          }
+
+          var classNameSplit;
+          if (!obj.className) {
+            classNameSplit = [];
+          }
+          else {
+            classNameSplit = obj.className.split(' ');
+          }
+
+          // Handle case, when entered value contains white spaces.
+          var valueSplit = value.split(' ');
+          var valuesToAdd = [];
+
+          // Check splitted entries separately.
+          for (var i = 0; i < valueSplit.length; i++) {
+            var found = false;
+
+            for (var j = 0; j < classNameSplit.length; j++) {
+              if (valueSplit[i] === classNameSplit[j]) {
+                found = true;
+                break;
+              }
+            }
+
+            if (found === false) {
+              valuesToAdd.push(valueSplit[i])
+            }
+          }
+
+          // Append unique values only.
+          if (valuesToAdd.length > 0) {
+            classNameSplit.push.apply(classNameSplit, valuesToAdd);
+          }
+
+          obj.className = classNameSplit.join(' ');
+          refreshResult();
+        }
+
+      })();
+      
+    </script>
+  </head>
+  <body>
+    <div id="resultBlock">
+      <p>Current className: " <span id="result"></span> " <p>
+    </div>
+
+    <div id="inputBlock">
+      <p>Enter class to add to className: </p>
+      <input type="text" id="adCls" size="10"><button id="btnAdd">Add</button>
+    </div>
+  </body>
+</html>
