@@ -6,17 +6,24 @@
     init();
   }
 
+  /**
+   * Initializes application.
+   */
   function init() {
 
-    // TODO Test initialization.
-    var user = new USER('uid0', {
-      'username': 'john',
-      'role': '1',
-      'tasks': ['tid0', 'tid2']
+    // Init in-memory data representation.
+    APP_DATA.init();
+
+    // Add some test entities.
+    APP_DATA.addEnt('users', {
+      'username': 'steve',
+      'role': '2',
+      'tasks': ['tasks1']
     });
-    var task = new TASK('tid0', {
-      'client': 'uid1',
-      'worker': 'uid2',
+
+    APP_DATA.addEnt('tasks', {
+      'client': 'users1',
+      'worker': 'users2',
       'status': '1',
       'title': 'Some title',
       'description': 'Some description',
@@ -25,21 +32,20 @@
       'deadline': '1463666241112',
       'completion': '80',
       'date': '1463666241112',
-      'comments': ['cid0', 'cid2'],
+      'comments': ['comments1', 'comments2'],
     });
-    var comment = new COMMENT('cid0', {
-      'task': 'tid0',
-      'author': 'uid2',
+
+    APP_DATA.addEnt('comments', {
+      'task': 'tasks1',
+      'author': 'users1',
       'text': 'Some comment',
       'date': '1463666241112'
     });
 
-    console.log(user);
-    console.log(user.getSnapshot());
-    console.log(task);
-    console.log(task.getSnapshot());
-    console.log(comment);
-    console.log(comment.getSnapshot());
+    // Save data to localStorage.
+    APP_DATA.saveAll();
+
+    console.log(APP_DATA.get());
 
   }
 
