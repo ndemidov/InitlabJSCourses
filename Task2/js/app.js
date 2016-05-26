@@ -43,9 +43,9 @@
     });
 
     // Save data to localStorage.
-    APP_DATA.saveAll();
+    //APP_DATA.saveAll();
 
-    console.log(APP_DATA.get());
+    //console.log(APP_DATA.get());
 
   }
 

@@ -1,0 +1,79 @@
+
+.jsc-content {
+  margin-top: 10%;
+}
+
+.jsc-panel {
+  opacity: 0;
+  position: absolute;
+  top: 10%;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.jsc-panel-small {
+  width: 30%;
+  height: 30%;
+}
+
+.jsc-panel-medium {
+  width: 50%;
+  height: 32%;
+}
+
+.jsc-panel-large {
+  width: 80%;
+  height: 95%;
+}
+
+.jsc-panel-level-1 {
+  z-index: 1;
+}
+
+.jsc-panel-level-2 {
+  z-index: 2;
+}
+
+.jsc-panel-level-3 {
+  z-index: 3;
+}
+
+.jsc-centered-panel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+}
+
+.jsc-popup-tint {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: black;
+  opacity: 0.2;
+}
+
+.jsc-header-button {
+  opacity: 0;
+}
+
+.visible {
+  opacity: 1;
+}
+
+.animated {
+  -webkit-transition: opacity .5s ease;
+  -moz-transition: opacity .5s ease;
+  -ms-transition: opacity .5s ease;
+  -o-transition: opacity .5s ease;
+  transition: opacity .5s ease;
+}
+
+.jsc-header-panel-username {
+  line-height: 36px;
+}
