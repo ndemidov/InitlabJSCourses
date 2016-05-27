@@ -13,9 +13,19 @@
 
     // Init in-memory data representation.
     APP_DATA.init();
+    AUTH.init();
+    UI_CONTROL.init();
+
+    /*APP_DATA.addEnt('users', {
+      'username': 'admin',
+      'role': '0',
+      'tasks': []
+    });
+
+    APP_DATA.saveGrp('users');*/
 
     // Add some test entities.
-    APP_DATA.addEnt('users', {
+    /*APP_DATA.addEnt('users', {
       'username': 'steve',
       'role': '2',
       'tasks': ['tasks1']
@@ -40,7 +50,7 @@
       'author': 'users1',
       'text': 'Some comment',
       'date': '1463666241112'
-    });
+    });*/
 
     // Save data to localStorage.
     //APP_DATA.saveAll();

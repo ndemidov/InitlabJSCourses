@@ -1,4 +1,8 @@
 
+.jsc-header-panel {
+  opacity: 0;
+}
+
 .jsc-content {
   margin-top: 10%;
 }
@@ -10,6 +14,10 @@
   left: 0;
   right: 0;
   bottom: 0;
+}
+
+.jsc-login-panel {
+    top: 0;
 }
 
 .jsc-panel-small {

@@ -2,7 +2,7 @@
 
 var APP_STORAGE = (function(strg) {
 
-  var namespacePrefix = 'jsc_app4_';
+  var namespacePrefix = 'jsc_app2_';
   var idIncrementPrefix = 'incr_';
 
   /**

@@ -72,12 +72,24 @@ var APP_DATA = (function(adt) {
 
   }
 
+  function findUserByName(username) {
+    var resultData = false;
+    for (var uid in appdata.users) {
+      if (appdata.users[uid].data.username === username) {
+        resultData = appdata.users[uid];
+        break;
+      }
+    }
+    return resultData
+  }
+
   // Exports.
   adt.init = init;
   adt.get = get;
   adt.addEnt = addEntity;
   adt.saveGrp = saveGroup;
   adt.saveAll = saveAll;
+  adt.findUserByName = findUserByName;
 
   return adt;
 })(APP_DATA || {});

@@ -15,26 +15,29 @@
     <script src="js/user.js"></script>
     <script src="js/task.js"></script>
     <script src="js/comment.js"></script>
+    <script src="js/ui_blocks.js"></script>
     <script src="js/config.js"></script>
     <script src="js/app_data.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/ui_control.js"></script>
     <script src="js/app.js"></script>
   </head>
   <body>
-    <div class="header-panel row">
+    <div id="jscHeaderPanel" class="jsc-header-panel row animated" style="display: none;">
       <div class="panel panel-default">
         <div class="panel-body">
           <div class="col-md-2">
-            <button id="jscHeaderPanelBack" type="button" class="btn btn-default jsc-header-button animated visible">
+            <button id="jscHeaderPanelBack" type="button" class="btn btn-default jsc-header-button animated">
               <span class="glyphicon glyphicon-menu-left" aria-hidden="true"></span>
             </button>
           </div>
           <div class="col-md-7">
             <div class="rightsControlled" showTo="0">
               <div class="col-md-offset-6 col-md-3 text-right">
-                <button id="jscHeaderPanelNewClient" type="button" class="btn btn-default">Register Client</button>
+                <button id="jscHeaderPanelNewClient" type="button" class="btn btn-default" allowedTo="0">Register Client</button>
               </div>
               <div class="col-md-3 text-right">
-                <button id="jscHeaderPanelNewWorker" type="button" class="btn btn-default">Register Worker</button>
+                <button id="jscHeaderPanelNewWorker" type="button" class="btn btn-default" allowedTo="0">Register Worker</button>
               </div>
             </div>
           </div>
@@ -49,17 +52,21 @@
         </div>
       </div>
     </div>
+
+
     <div class="container jsc-content">
       <div class="row">
+
+
         <!-- a. login panel -->
-        <div id="jscLoginPanel" class="jsc-panel jsc-content-panel jsc-panel-level-1 animated">
+        <div id="jscLoginPanel" class="jsc-panel jsc-login-panel jsc-content-panel jsc-panel-level-1 animated" style="display: none;">
           <div class="col-md-12 jsc-panel-small jsc-centered-panel">
             <div class="panel panel-default">
               <div class="panel-heading">
                 <h3 class="panel-title">Please login in</h3>
               </div>
               <div class="panel-body">
-                <form>
+                <form id="jscLoginPanelForm">
                   <div class="form-group">
                     <label for="jscLoginPanelInputUsername">Login</label>
                     <input type="text" class="form-control" id="jscLoginPanelInputUsername" placeholder="Username">
@@ -73,15 +80,16 @@
 
 
         <!-- b. create task panel -->
-        <div id="jscCreateTaskPanel" class="jsc-panel jsc-popup-panel jsc-panel-level-2 animated">
+        <div id="jscCreateTaskPanel" class="jsc-panel jsc-popup-panel jsc-panel-level-2 animated" style="display: none;">
           <div class="jsc-popup-tint"></div>
           <div class="col-md-12 jsc-panel-large jsc-centered-panel">
             <div class="panel panel-default">
               <div class="panel-heading">
+                <button id="jscCreateTaskPanelClose" type="button" class="close">&times;</button>
                 <h3 class="panel-title">Create new task</h3>
               </div>
               <div class="panel-body">
-                <form>
+                <form id="jscCreateTaskPanelForm">
                   <div class="form-group col-md-12">
                     <label for="jscCreateTaskPanelInputTitle">Title</label>
                     <input type="text" class="form-control" id="jscCreateTaskPanelInputTitle" placeholder="Task title">
@@ -100,7 +108,7 @@
                           <p id="jscCreateTaskPanelInputWorkerName">No worker assigned yet</p>
                         </span>
                         <span class="col-md-6">
-                          <button class="btn btn-default">Assign worker</button>
+                          <button id="jscCreateTaskPanelAssignWorker" class="btn btn-default">Assign worker</button>
                         </span>
                       </div>
                     </div>
@@ -127,34 +135,41 @@
 
 
         <!-- c. task list panel -->
-        <div id="jscTaskListPanel" class="jsc-panel jsc-content-panel jsc-panel-level-1 animated">
+        <div id="jscTaskListPanel" class="jsc-panel jsc-content-panel jsc-panel-level-1 animated" style="display: none;">
           <div class="col-md-12">
-            <table class="table table-hover">
-              <thead>
-                <tr>
-                  <th>Status</th>
-                  <th class="rightsControlled" showTo="0,2">Priority</th>
-                  <th>Title</th>
-                  <th class="rightsControlled" showTo="0,2">Deadline</th>
-                </tr>
-              </thead>
-              <tbody>
-                <!-- EXAMPLE -->
-                <!--<tr id='task1'>
-                  <td>OPEN</td>
-                  <td class="rightsControlled" showTo="0,2">Medium</td>
-                  <td>Test title</td>
-                  <td class="rightsControlled" showTo="0,2">19/12/1992</td>
-                </tr>-->
-              </tbody>
-            </table>
-            <button id="jscTaskListPanelCreateTask" type="submit" class="btn btn-default rightsControlled" showTo="0,1">Create new task</button>
+            <div class="row">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>Status</th>
+                    <th class="rightsControlled" showTo="0,2">Priority</th>
+                    <th>Title</th>
+                    <th class="rightsControlled" showTo="0,2">Deadline</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- EXAMPLE -->
+                  <!--<tr id='task1'>
+                    <td>OPEN</td>
+                    <td class="rightsControlled" showTo="0,2">Medium</td>
+                    <td>Test title</td>
+                    <td class="rightsControlled" showTo="0,2">19/12/1992</td>
+                  </tr>-->
+                </tbody>
+              </table>
+            </div>
+            <div class="row text-center">
+              <i id="tasksEmpty" class="text-muted">No tasks to display</i>
+            </div>
+            <div class="row">
+              <button id="jscTaskListPanelCreateTask" type="submit" class="btn btn-default rightsControlled" showTo="0,1">Create new task</button>
+            </div>
           </div>
         </div>
 
 
         <!-- d. task view panel -->
-        <div id="jscTaskViewPanel" class="jsc-panel jsc-content-panel jsc-panel-level-1 animated visible">
+        <div id="jscTaskViewPanel" class="jsc-panel jsc-content-panel jsc-panel-level-1 animated" style="display: none;">
           <div class="col-md-12">
             <div id="jscTaskViewPanelInsiderInfo" class="rightsControlled" showTo="0,2">
               <table class="table">
@@ -241,11 +256,12 @@
 
 
         <!-- e. comment create panel -->
-        <div id="jscCreateCommentPanel" class="jsc-panel jsc-popup-panel jsc-panel-level-3 animated">
+        <div id="jscCreateCommentPanel" class="jsc-panel jsc-popup-panel jsc-panel-level-3 animated" style="display: none;">
           <div class="jsc-popup-tint"></div>
           <div class="col-md-12 jsc-panel-medium jsc-centered-panel">
             <div class="panel panel-default">
               <div class="panel-heading">
+                <button id="jscCreateCommentPanelClose" type="button" class="close">&times;</button>
                 <h3 class="panel-title">Create new comment</h3>
               </div>
               <div class="panel-body">
@@ -263,20 +279,21 @@
 
 
         <!-- f. register client panel -->
-        <div id="jscRegisterClientPanel" class="jsc-panel jsc-popup-panel jsc-panel-level-3 animated">
+        <div id="jscRegisterClientPanel" class="jsc-panel jsc-popup-panel jsc-panel-level-3 animated" style="display: none;">
           <div class="jsc-popup-tint"></div>
           <div class="col-md-12 jsc-panel-small jsc-centered-panel">
             <div class="panel panel-default">
               <div class="panel-heading">
+                <button id="jscRegisterClientPanelClose" type="button" class="close">&times;</button>
                 <h3 class="panel-title">Register new client</h3>
               </div>
               <div class="panel-body">
-                <form>
+                <form id="jscRegisterClientPanelForm">
                   <div class="form-group col-md-12">
                     <label for="jscRegisterClientPanelInputName">Name</label>
                     <input type="text" class="form-control" id="jscRegisterClientPanelInputName" placeholder="Client username">
                   </div>
-                  <button id="jscRegisterClientPanelSubmit" type="submit" class="btn btn-default">Register</button>
+                  <button id="jscRegisterClientPanelSubmit" type="submit" class="btn btn-default" allowedTo="0">Register</button>
                 </form>
               </div>
             </div>
@@ -285,20 +302,21 @@
 
 
         <!-- g. register worker panel -->
-        <div id="jscRegisterWorkerPanel" class="jsc-panel jsc-popup-panel jsc-panel-level-3 animated">
+        <div id="jscRegisterWorkerPanel" class="jsc-panel jsc-popup-panel jsc-panel-level-3 animated" style="display: none;">
           <div class="jsc-popup-tint"></div>
           <div class="col-md-12 jsc-panel-small jsc-centered-panel">
             <div class="panel panel-default">
               <div class="panel-heading">
+                <button id="jscRegisterWorkerPanelClose" type="button" class="close">&times;</button>
                 <h3 class="panel-title">Register new worker</h3>
               </div>
               <div class="panel-body">
-                <form>
+                <form id="jscRegisterWorkerPanelForm">
                   <div class="form-group col-md-12">
                     <label for="jscRegisterWorkerPanelInputName">Name</label>
                     <input type="text" class="form-control" id="jscRegisterWorkerPanelInputName" placeholder="Worker username">
                   </div>
-                  <button id="jscRegisterWorkerPanelSubmit" type="submit" class="btn btn-default">Register</button>
+                  <button id="jscRegisterWorkerPanelSubmit" type="submit" class="btn btn-default" allowedTo="0">Register</button>
                 </form>
               </div>
             </div>
@@ -307,11 +325,12 @@
 
 
         <!-- h. edit task panel -->
-        <div id="jscEditTaskPanel" class="jsc-panel jsc-popup-panel jsc-panel-level-2 animated">
+        <div id="jscEditTaskPanel" class="jsc-panel jsc-popup-panel jsc-panel-level-2 animated" style="display: none;">
           <div class="jsc-popup-tint"></div>
           <div class="col-md-12 jsc-centered-panel jsc-panel-large">
             <div class="panel panel-default">
               <div class="panel-heading">
+                <button id="jscEditTaskPanelClose" type="button" class="close">&times;</button>
                 <h3 class="panel-title">Edit task</h3>
               </div>
               <div class="panel-body">
@@ -334,7 +353,7 @@
                           <p id="jscEditTaskPanelInputWorkerName">No worker assigned yet</p>
                         </span>
                         <span class="col-md-6">
-                          <button class="btn btn-default">Assign worker</button>
+                          <button id="jscEditTaskPanelSubmit" class="btn btn-default" allowedTo="0">Assign worker</button>
                         </span>
                       </div>
                     </div>
@@ -387,11 +406,12 @@
 
 
         <!-- i. assign worker panel -->
-        <div id="jscAssignWorkerPanel" class="jsc-panel jsc-panel-level-3 animated">
+        <div id="jscAssignWorkerPanel" class="jsc-panel jsc-panel-level-3 animated" style="display: none;">
           <div class="jsc-popup-tint"></div>
           <div class="jsc-assign-worker col-md-12 jsc-centered-panel jsc-panel-small">
             <div class="panel panel-default">
               <div class="panel-heading">
+                <button id="jscAssignWorkerPanelClose" type="button" class="close">&times;</button>
                 <h3 class="panel-title">Assign worker</h3>
               </div>
               <div class="panel-body">
@@ -400,7 +420,7 @@
                     <label for="jscAssignWorkerPanelInputWorker">Worker</label>
                     <select class="form-control" id="jscAssignWorkerPanelInputWorker"></select>
                   </div>
-                  <button id="jscAssignWorkerPanelSubmit" type="submit" class="btn btn-default">Assign</button>
+                  <button id="jscAssignWorkerPanelSubmit" type="submit" class="btn btn-default" allowedTo="0">Assign</button>
                 </form>
               </div>
             </div>

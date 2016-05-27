@@ -33,10 +33,49 @@ var CONFIG = (function() {
     '3': 'critical'
   };
 
+  var blocks = [
+    {
+      id: "jscHeaderPanel",
+    },
+    {
+      id: "jscLoginPanel",
+    },
+    {
+      id: "jscCreateTaskPanel",
+    },
+    {
+      id: "jscTaskListPanel",
+    },
+    {
+      id: "jscTaskViewPanel",
+    },
+    {
+      id: "jscCreateCommentPanel",
+    },
+    {
+      id: "jscRegisterClientPanel",
+    },
+    {
+      id: "jscRegisterWorkerPanel",
+    },
+    {
+      id: "jscEditTaskPanel",
+    },
+    {
+      id: "jscAssignWorkerPanel",
+    }
+  ];
+
+  // Add links to panels contructor;
+  for (var i = 0; i < blocks.length; i++) {
+    blocks[i].class = UI_BLOCKS.UIBasePanel;
+  }
+
   return {
     entities: entities,
     role: role,
     status: status,
-    priority: priority
+    priority: priority,
+    blocks: blocks
   }
 })(CONFIG || {});
