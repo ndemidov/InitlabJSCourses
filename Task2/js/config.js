@@ -63,6 +63,9 @@ var CONFIG = (function() {
     },
     {
       id: "jscAssignWorkerPanel",
+    },
+    {
+      id: "jscAssignClientPanel",
     }
   ];
 

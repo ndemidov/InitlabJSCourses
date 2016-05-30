@@ -157,7 +157,7 @@ var UI_BLOCKS = (function(ub) {
     }
   };
 
-  // TODO 
+  // TODO
   /*UIBasePanel.prototype.removeListeners = function(settings) {
     for (var i = 0; i < settings.length; i++) {
       var eventId = settings[i].event + '*' + settings[i].target;

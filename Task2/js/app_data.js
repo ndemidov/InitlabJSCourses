@@ -83,6 +83,37 @@ var APP_DATA = (function(adt) {
     return resultData
   }
 
+  function getUsers(role) {
+    var resultList = {};
+    var wList = appdata.users;
+    for (var id in wList) {
+      if (wList[id].data.role === role) {
+        resultList[id] = wList[id].data.username;
+      }
+    }
+    return resultList;
+  }
+
+  function createNewTask(formData) {
+    var data = {};
+    var now = new Date();
+
+    data.client = formData.client;
+    data.worker = formData.worker || '';
+    data.status = '1';
+    data.title = formData.title;
+    data.description = formData.description;
+    data.priority = formData.priority || '1';
+    data.estimated = formData.estimated || '';
+    data.deadline = formData.deadline || '';
+    data.completion = '0';
+    data.date = now.getTime();
+    data.comments = [];
+
+    addEntity('tasks', data);
+    saveGroup('tasks');
+  }
+
   // Exports.
   adt.init = init;
   adt.get = get;
@@ -90,6 +121,8 @@ var APP_DATA = (function(adt) {
   adt.saveGrp = saveGroup;
   adt.saveAll = saveAll;
   adt.findUserByName = findUserByName;
+  adt.getUsers = getUsers;
+  adt.createNewTask = createNewTask;
 
   return adt;
 })(APP_DATA || {});

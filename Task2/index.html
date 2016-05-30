@@ -10,6 +10,7 @@
     <link href="css/style.css" rel="stylesheet" type="text/css"/>
 
     <script src="js/utils.js"></script>
+    <script src="js/validation.js"></script>
     <script src="js/storage.js"></script>
     <script src="js/entity.js"></script>
     <script src="js/user.js"></script>
@@ -69,7 +70,7 @@
                 <form id="jscLoginPanelForm">
                   <div class="form-group">
                     <label for="jscLoginPanelInputUsername">Login</label>
-                    <input type="text" class="form-control" id="jscLoginPanelInputUsername" placeholder="Username">
+                    <input type="text" class="form-control" id="jscLoginPanelInputUsername" name="username" placeholder="Username">
                   </div>
                   <button id="jscLoginPanelSubmit" type="submit" class="btn btn-default">Proceed</button>
                 </form>
@@ -92,37 +93,57 @@
                 <form id="jscCreateTaskPanelForm">
                   <div class="form-group col-md-12">
                     <label for="jscCreateTaskPanelInputTitle">Title</label>
-                    <input type="text" class="form-control" id="jscCreateTaskPanelInputTitle" placeholder="Task title">
+                    <input type="text" class="form-control" id="jscCreateTaskPanelInputTitle" name="title" placeholder="Task title">
                   </div>
 
                   <div class="form-group col-md-12">
                     <label for="jscCreateTaskPanelInputDescription">Description</label>
-                    <textarea type="text" class="form-control" id="jscCreateTaskPanelInputDescription" placeholder="Add a few notes about this task..."></textarea>
+                    <textarea type="text" class="form-control" id="jscCreateTaskPanelInputDescription" name="description" placeholder="Add a few notes about this task..."></textarea>
                   </div>
 
                   <div class="form-group col-md-12 rightsControlled" showTo="0">
-                    <div class="col-md-5">
-                      <label for="jscCreateTaskPanelInputWorker">Worker</label>
-                      <div id="jscCreateTaskPanelInputWorker" class="col-md-12">
-                        <span class="col-md-6">
-                          <p id="jscCreateTaskPanelInputWorkerName">No worker assigned yet</p>
-                        </span>
-                        <span class="col-md-6">
-                          <button id="jscCreateTaskPanelAssignWorker" class="btn btn-default">Assign worker</button>
-                        </span>
+                    <div class="row">
+                      <div class="col-md-4">
+                        <label for="jscCreateTaskPanelInputClient">Client</label>
+                        <div id="jscCreateTaskPanelInputClient" class="col-md-12">
+                          <span class="col-md-6">
+                            <p id="jscCreateTaskPanelInputCLientName" class="jscAssignedClient" value="">No client assigned yet</p>
+                          </span>
+                          <span class="col-md-6">
+                            <button id="jscCreateTaskPanelAssignClient" class="btn btn-default" allowedTo="0">Assign client</button>
+                          </span>
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <label for="jscCreateTaskPanelInputWorker">Worker</label>
+                        <div id="jscCreateTaskPanelInputWorker" class="col-md-12">
+                          <span class="col-md-6">
+                            <p id="jscCreateTaskPanelInputWorkerName" class="jscAssignedWorker" value="">No worker assigned yet</p>
+                          </span>
+                          <span class="col-md-6">
+                            <button id="jscCreateTaskPanelAssignWorker" class="btn btn-default" allowedTo="0">Assign worker</button>
+                          </span>
+                        </div>
                       </div>
                     </div>
-                    <div class="col-md-2">
-                      <label for="jscCreateTaskPanelInputPriority">Priority</label>
-                      <select class="form-control" id="jscCreateTaskPanelInputPriority"></select>
-                    </div>
-                    <div class="col-md-2">
-                      <label for="jscCreateTaskPanelInputEstimated">Estimated</label>
-                      <input type="text" class="form-control" id="jscCreateTaskPanelInputEstimated" placeholder="Estimated hours">
-                    </div>
-                    <div class="col-md-3">
-                      <label for="jscCreateTaskPanelInputDeadline">Deadline</label>
-                      <input type="date" class="form-control" id="jscCreateTaskPanelInputDeadline">
+                    <div class="row">
+                      <div class="col-md-2">
+                        <label for="jscCreateTaskPanelInputPriority">Priority</label>
+                        <select class="form-control" id="jscCreateTaskPanelInputPriority" name="priority">
+                          <option value="0">Low</option>
+                          <option value="1" selected>Medium</option>
+                          <option value="2">High</option>
+                          <option value="3">Critical</option>
+                        </select>
+                      </div>
+                      <div class="col-md-2">
+                        <label for="jscCreateTaskPanelInputEstimated">Estimated</label>
+                        <input type="text" class="form-control" id="jscCreateTaskPanelInputEstimated" name="estimated" placeholder="Estimated hours">
+                      </div>
+                      <div class="col-md-3">
+                        <label for="jscCreateTaskPanelInputDeadline">Deadline</label>
+                        <input type="date" class="form-control" id="jscCreateTaskPanelInputDeadline" name="deadline">
+                      </div>
                     </div>
                   </div>
 
@@ -162,7 +183,7 @@
               <i id="tasksEmpty" class="text-muted">No tasks to display</i>
             </div>
             <div class="row">
-              <button id="jscTaskListPanelCreateTask" type="submit" class="btn btn-default rightsControlled" showTo="0,1">Create new task</button>
+              <button id="jscTaskListPanelCreateTask" type="submit" class="btn btn-default rightsControlled" showTo="0,1" allowedTo="0,1">Create new task</button>
             </div>
           </div>
         </div>
@@ -268,7 +289,7 @@
                 <form>
                   <div class="form-group col-md-12">
                     <label for="jscCreateCommentPanelInputText">Comment</label>
-                    <textarea type="text" class="form-control" id="jscCreateCommentPanelInputText" placeholder="Type your comment here.."></textarea>
+                    <textarea type="text" class="form-control" id="jscCreateCommentPanelInputText" name="text" placeholder="Type your comment here.."></textarea>
                   </div>
                   <button id="jscCreateCommentPanelSubmit" type="submit" class="btn btn-default">Create</button>
                 </form>
@@ -291,7 +312,7 @@
                 <form id="jscRegisterClientPanelForm">
                   <div class="form-group col-md-12">
                     <label for="jscRegisterClientPanelInputName">Name</label>
-                    <input type="text" class="form-control" id="jscRegisterClientPanelInputName" placeholder="Client username">
+                    <input type="text" class="form-control" id="jscRegisterClientPanelInputName" name="username" placeholder="Client username">
                   </div>
                   <button id="jscRegisterClientPanelSubmit" type="submit" class="btn btn-default" allowedTo="0">Register</button>
                 </form>
@@ -314,7 +335,7 @@
                 <form id="jscRegisterWorkerPanelForm">
                   <div class="form-group col-md-12">
                     <label for="jscRegisterWorkerPanelInputName">Name</label>
-                    <input type="text" class="form-control" id="jscRegisterWorkerPanelInputName" placeholder="Worker username">
+                    <input type="text" class="form-control" id="jscRegisterWorkerPanelInputName" name="username" placeholder="Worker username">
                   </div>
                   <button id="jscRegisterWorkerPanelSubmit" type="submit" class="btn btn-default" allowedTo="0">Register</button>
                 </form>
@@ -334,15 +355,15 @@
                 <h3 class="panel-title">Edit task</h3>
               </div>
               <div class="panel-body">
-                <form>
+                <form class="jscEditTaskPanelForm">
                   <div class="form-group col-md-12">
                     <label for="jscEditTaskPanelInputTitle">Title</label>
-                    <input type="text" class="form-control" id="jscEditTaskPanelInputTitle" placeholder="Task title">
+                    <input type="text" class="form-control" id="jscEditTaskPanelInputTitle" name="title" placeholder="Task title">
                   </div>
 
                   <div class="form-group col-md-12">
                     <label for="jscEditTaskPanelInputDescription">Description</label>
-                    <textarea type="text" class="form-control" id="jscEditTaskPanelInputDescription" placeholder="Change a few notes about this task..."></textarea>
+                    <textarea type="text" class="form-control" id="jscEditTaskPanelInputDescription" name="description" placeholder="Change a few notes about this task..."></textarea>
                   </div>
 
                   <div class="form-group col-md-12 rightsControlled" showTo="0">
@@ -350,7 +371,7 @@
                       <label for="jscEditTaskPanelInputWorker">Worker</label>
                       <div id="jscEditTaskPanelInputWorker" class="col-md-12">
                         <span class="col-md-6">
-                          <p id="jscEditTaskPanelInputWorkerName">No worker assigned yet</p>
+                          <p id="jscEditTaskPanelInputWorkerName" class="jscAssignedWorker" value="">No worker assigned yet</p>
                         </span>
                         <span class="col-md-6">
                           <button id="jscEditTaskPanelSubmit" class="btn btn-default" allowedTo="0">Assign worker</button>
@@ -359,29 +380,38 @@
                     </div>
                     <div class="col-md-2">
                       <label for="jscEditTaskPanelInputPriority">Priority</label>
-                      <select class="form-control" id="jscEditTaskPanelInputPriority"></select>
+                      <select class="form-control" id="jscEditTaskPanelInputPriority" name="priority">
+                        <option value="0">Low</option>
+                        <option value="1">Medium</option>
+                        <option value="2">High</option>
+                        <option value="3">Critical</option>
+                      </select>
                     </div>
                     <div class="col-md-2">
                       <label for="jscEditTaskPanelInputEstimated">Estimated</label>
-                      <input type="text" class="form-control" id="jscEditTaskPanelInputEstimated" placeholder="Estimated hours">
+                      <input type="text" class="form-control" id="jscEditTaskPanelInputEstimated" name="estimated" placeholder="Estimated hours">
                     </div>
                     <div class="col-md-3">
                       <label for="jscEditTaskPanelInputDeadline">Deadline</label>
-                      <input type="date" class="form-control" id="jscEditTaskPanelInputDeadline">
+                      <input type="date" class="form-control" id="jscEditTaskPanelInputDeadline" name="deadline">
                     </div>
                   </div>
 
                   <div class="form-group col-md-12">
                     <div class="col-md-3">
                       <label for="jscEditTaskPanelInputStatus">Status</label>
-                      <select class="form-control" id="jscEditTaskPanelInputStatus"></select>
+                      <select class="form-control" id="jscEditTaskPanelInputStatus" name="status">
+                        <option value="0">Closed</option>
+                        <option value="1">Pending</option>
+                        <option value="2">Opened</option>
+                      </select>
                     </div>
                   </div>
 
                   <div class="form-group col-md-12 rightsControlled" showTo="0,2">
                     <div class="col-md-3">
                       <label for="jscEditTaskPanelInputCompletion">Completion</label>
-                      <select class="form-control" id="jscEditTaskPanelInputCompletion">
+                      <select class="form-control" id="jscEditTaskPanelInputCompletion" name="completion">
                         <option value="0">0%</option>
                         <option value="10">10%</option>
                         <option value="20">20%</option>
@@ -415,12 +445,35 @@
                 <h3 class="panel-title">Assign worker</h3>
               </div>
               <div class="panel-body">
-                <form>
+                <form id="jscAssignWorkerPanelForm">
                   <div class="form-group col-md-12">
                     <label for="jscAssignWorkerPanelInputWorker">Worker</label>
-                    <select class="form-control" id="jscAssignWorkerPanelInputWorker"></select>
+                    <select class="form-control" id="jscAssignWorkerPanelInputWorker" name="worker"></select>
                   </div>
                   <button id="jscAssignWorkerPanelSubmit" type="submit" class="btn btn-default" allowedTo="0">Assign</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- i. assign client panel -->
+        <div id="jscAssignClientPanel" class="jsc-panel jsc-panel-level-3 animated" style="display: none;">
+          <div class="jsc-popup-tint"></div>
+          <div class="jsc-assign-client col-md-12 jsc-centered-panel jsc-panel-small">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <button id="jscAssignClientPanelClose" type="button" class="close">&times;</button>
+                <h3 class="panel-title">Assign client</h3>
+              </div>
+              <div class="panel-body">
+                <form id="jscAssignClientPanelForm">
+                  <div class="form-group col-md-12">
+                    <label for="jscAssignClientPanelInputClient">Client</label>
+                    <select class="form-control" id="jscAssignClientPanelInputClient" name="client"></select>
+                  </div>
+                  <button id="jscAssignClientPanelSubmit" type="submit" class="btn btn-default" allowedTo="0">Assign</button>
                 </form>
               </div>
             </div>

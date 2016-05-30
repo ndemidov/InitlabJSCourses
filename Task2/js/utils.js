@@ -29,6 +29,13 @@ var UTILS = (function(utls) {
   }
 
   /**
+   * Capitalizes first letter of string.
+   */
+  function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  }
+
+  /**
    * Checks if element has target class.
    */
   function hasClass(element, classname) {
@@ -65,19 +72,32 @@ var UTILS = (function(utls) {
     element.className = initialClassSplit.join(' ');
   }
 
-  function validateUsername(username) {
-    var usernameRegex = /^[a-zA-Z0-9]{2,30}$/;
-    return usernameRegex.test(username);
+  /**
+   * Creates html of options for select.
+   */
+  function createMarkupSelect(values, addEmpty, defaultValue) {
+    var markup = '';
+    if (addEmpty === true) {
+      markup += '<option value="">--Select Worker--</option>';
+    }
+    for (var value in values) {
+      var selected = "";
+      if (defaultValue && defaultValue === value) {
+        selected = " selected";
+      }
+      markup += '<option value="' + value + '"' + selected + '>' + capitalizeFirstLetter(values[value]) + '</option>';
+    }
+    return markup;
   }
-
 
   // Exports.
   utls.inArray = inArray;
   utls.isEmptyObject = isEmptyObject;
+  utls.capitalizeFirstLetter = capitalizeFirstLetter;
   utls.hasClass = hasClass;
   utls.addClass = addClass;
   utls.removeClass = removeClass;
-  utls.validateUsername = validateUsername;
+  utls.createMarkupSelect = createMarkupSelect;
 
   return utls;
 })(UTILS || {});
