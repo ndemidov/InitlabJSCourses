@@ -25,7 +25,7 @@
   </head>
   <body>
     <div id="jscHeaderPanel" class="jsc-header-panel row animated" style="display: none;">
-      <div class="panel panel-default">
+      <div class="panel panel-default jsc-header-panel-container">
         <div class="panel-body">
           <div class="col-md-2">
             <button id="jscHeaderPanelBack" type="button" class="btn btn-default jsc-header-button animated">
@@ -33,7 +33,7 @@
             </button>
           </div>
           <div class="col-md-7">
-            <div class="rightsControlled" showTo="0">
+            <div class="rightsControlled" showto="0">
               <div class="col-md-offset-6 col-md-3 text-right">
                 <button id="jscHeaderPanelNewClient" type="button" class="btn btn-default" allowedTo="0">Register Client</button>
               </div>
@@ -101,7 +101,7 @@
                     <textarea type="text" class="form-control" id="jscCreateTaskPanelInputDescription" name="description" placeholder="Add a few notes about this task..."></textarea>
                   </div>
 
-                  <div class="form-group col-md-12 rightsControlled" showTo="0">
+                  <div class="form-group col-md-12 rightsControlled" showto="0">
                     <div class="row">
                       <div class="col-md-4">
                         <label for="jscCreateTaskPanelInputClient">Client</label>
@@ -163,18 +163,18 @@
                 <thead>
                   <tr>
                     <th>Status</th>
-                    <th class="rightsControlled" showTo="0,2">Priority</th>
+                    <th class="rightsControlled" showto="0,2">Priority</th>
                     <th>Title</th>
-                    <th class="rightsControlled" showTo="0,2">Deadline</th>
+                    <th class="rightsControlled" showto="0,2">Deadline</th>
                   </tr>
                 </thead>
                 <tbody>
                   <!-- EXAMPLE -->
                   <!--<tr id='task1'>
                     <td>OPEN</td>
-                    <td class="rightsControlled" showTo="0,2">Medium</td>
+                    <td class="rightsControlled" showto="0,2">Medium</td>
                     <td>Test title</td>
-                    <td class="rightsControlled" showTo="0,2">19/12/1992</td>
+                    <td class="rightsControlled" showto="0,2">19/12/1992</td>
                   </tr>-->
                 </tbody>
               </table>
@@ -183,7 +183,7 @@
               <i id="tasksEmpty" class="text-muted">No tasks to display</i>
             </div>
             <div class="row">
-              <button id="jscTaskListPanelCreateTask" type="submit" class="btn btn-default rightsControlled" showTo="0,1" allowedTo="0,1">Create new task</button>
+              <button id="jscTaskListPanelCreateTask" type="submit" class="btn btn-default rightsControlled" showto="0,1" allowedTo="0,1">Create new task</button>
             </div>
           </div>
         </div>
@@ -192,7 +192,7 @@
         <!-- d. task view panel -->
         <div id="jscTaskViewPanel" class="jsc-panel jsc-content-panel jsc-panel-level-1 animated" style="display: none;">
           <div class="col-md-12">
-            <div id="jscTaskViewPanelInsiderInfo" class="rightsControlled" showTo="0,2">
+            <div id="jscTaskViewPanelInsiderInfo" class="rightsControlled" showto="0,2">
               <table class="table">
                 <thead>
                   <tr>
@@ -220,7 +220,7 @@
                 <b class="col-md-6">Status:</b>
                 <div id="jscTaskViewPanelStatus" class="col-md-6"></div>
               </div>
-              <div class="col-md-9 rightsControlled" showTo="0">
+              <div class="col-md-9 rightsControlled" showto="0">
                 <div class="col-md-6">
                   <b class="col-md-6">Client:</b>
                   <div id="jscTaskViewPanelClient" class="col-md-6"></div>
@@ -238,7 +238,7 @@
               <h4>Description</h4>
               <div class="panel panel-default">
                 <div class="panel-body">
-                  <div id="jscTaskViewPanelTitle"></div>
+                  <div id="jscTaskViewPanelDescription"></div>
                 </div>
               </div>
             </div>
@@ -246,8 +246,8 @@
               <h4>Comments</h4>
               <div class="panel panel-default">
                 <div class="panel-body">
+                  <i id="commentsEmpty" class="text-muted">No one leaved a comment yet</i>
                   <div class="jscTaskViewPanelCommentsContainer">
-                    <i id="commentsEmpty" class="text-muted">No one leaved a comment yet</i>
 
                     <!-- EXAMPLE COMMENT -->
                     <!--<div id="comment1" class="col-md-12">
@@ -366,7 +366,7 @@
                     <textarea type="text" class="form-control" id="jscEditTaskPanelInputDescription" name="description" placeholder="Change a few notes about this task..."></textarea>
                   </div>
 
-                  <div class="form-group col-md-12 rightsControlled" showTo="0">
+                  <div class="form-group col-md-12 rightsControlled" showto="0">
                     <div class="col-md-5">
                       <label for="jscEditTaskPanelInputWorker">Worker</label>
                       <div id="jscEditTaskPanelInputWorker" class="col-md-12">
@@ -408,7 +408,7 @@
                     </div>
                   </div>
 
-                  <div class="form-group col-md-12 rightsControlled" showTo="0,2">
+                  <div class="form-group col-md-12 rightsControlled" showto="0,2">
                     <div class="col-md-3">
                       <label for="jscEditTaskPanelInputCompletion">Completion</label>
                       <select class="form-control" id="jscEditTaskPanelInputCompletion" name="completion">

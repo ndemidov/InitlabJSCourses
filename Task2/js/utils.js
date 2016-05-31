@@ -90,6 +90,39 @@ var UTILS = (function(utls) {
     return markup;
   }
 
+  /**
+   * Parses string from date typed input into Date instance.
+   */
+  function parseDate(s) {
+    var b = s.split(/\D/);
+    return new Date(b[0], --b[1], b[2]);
+  }
+
+  /**
+   * Formats UNIX timestamp to human readable form.
+   */
+  function formatTimestamp(timestamp, includeTime) {
+    var dateString = '';
+    var date = new Date(timestamp);
+    var year = date.getFullYear();
+    var month = date.getMonth() + 1;
+    if (month < 10) {
+      month = '0' + month;
+    }
+    var day = date.getDate();
+    if (day < 10) {
+      day = '0' + day;
+    }
+    dateString = day + '.' + month + '.' + year;
+
+    if (includeTime) {
+      var hours = date.getHours();
+      var minutes = date.getMinutes();
+      dateString += ' ' + hours + ':' + minutes;
+    }
+    return dateString;
+  }
+
   // Exports.
   utls.inArray = inArray;
   utls.isEmptyObject = isEmptyObject;
@@ -98,6 +131,8 @@ var UTILS = (function(utls) {
   utls.addClass = addClass;
   utls.removeClass = removeClass;
   utls.createMarkupSelect = createMarkupSelect;
+  utls.parseDate = parseDate;
+  utls.formatTimestamp = formatTimestamp;
 
   return utls;
 })(UTILS || {});

@@ -82,6 +82,10 @@
   transition: opacity .5s ease;
 }
 
+.jsc-header-panel-container {
+  background-color: #F5F5F5;
+}
+
 .jsc-header-panel-username {
   line-height: 36px;
 }

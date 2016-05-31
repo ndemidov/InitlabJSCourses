@@ -112,14 +112,67 @@ var UI_BLOCKS = (function(ub) {
    * Delegates event handling from single base element.
    */
   UIBasePanel.prototype.delegateEvents = function(event) {
-    var target = event.target;
+    var eventType = event.type;
+    var eventPath = event.path;
 
-    // Contruct event id from event name and target element id.
-    var eventId = event.type + '*' + target.getAttribute('id');
+    /**
+     * Checks if provided target has handler for this event.
+     */
+    function checkTarget(target) {
+      var result = false;
 
-    // Call handling function for event.
-    if (this.handlersSettings[eventId]) {
-      this.handlersSettings[eventId].handler(event);
+      // Look in all registered handlers.
+      for (var eventId in this.handlersSettings) {
+        if (eventType === this.handlersSettings[eventId].type) {
+          var targetSelector = this.handlersSettings[eventId].target;
+          var prefix = targetSelector.charAt(0);
+          var selector = targetSelector.substring(1);
+
+          // Handle according to prefix.
+          if (prefix === "#") {
+            if (selector === target.getAttribute('id')) {
+              result = eventId;
+              break;
+            }
+          }
+          else if (prefix === ".") {
+            if (UTILS.hasClass(target, selector) === true) {
+              result = eventId;
+              break;
+            }
+          }
+          else {
+            console.log('Error: wrong or unsupported selector. Use #id or .class');
+          }
+        }
+      }
+      return result;
+    }
+
+    // Bind correct context to inner function.
+    var checkTargetCntx = checkTarget.bind(this);
+
+    var eventId = false;
+    var expectedTarget = null;
+
+    for (var i = 0; i < eventPath.length; i++) {
+      var currentElem = eventPath[i];
+
+      eventId = checkTargetCntx(currentElem);
+      if (eventId !== false) {
+
+        // Take expected event target.
+        expectedTarget = currentElem;
+        break;
+      }
+
+      if (currentElem === this.el) {
+        break;
+      }
+    }
+
+    if (eventId !== false) {
+      this.handlersSettings[eventId].handler(event, expectedTarget);
     }
   };
 
@@ -132,6 +185,7 @@ var UI_BLOCKS = (function(ub) {
       var eventId = settings[i].event + '*' + settings[i].target;
       var params = {
         eventId: eventId,
+        type: settings[i].event,
         handler: this.genericEventHandler.bind(this, eventId),
         target: settings[i].target
       };
@@ -141,13 +195,6 @@ var UI_BLOCKS = (function(ub) {
       }
 
       this.addHandlersSettings(params);
-      /*if (this.handlersSettings[eventId]) {
-        if (settings[i].callback) {
-          this.handlersSettings[eventId].outerCallback = settings[i].callback;
-        }
-        this.handlersSettings[eventId].target = settings[i].target;
-        this.el.addEventListener(settings[i].event, this.delegateEvents.bind(this), false);
-      }*/
 
       // Add listeners for unique events only.
       if (!UTILS.inArray(alreadyAddedEvents, settings[i].event)) {
@@ -173,6 +220,7 @@ var UI_BLOCKS = (function(ub) {
   UIBasePanel.prototype.addHandlersSettings = function(params) {
     if (!this.handlersSettings[params.eventId]) {
       this.handlersSettings[params.eventId] = {
+        type: params.type,
         handler: params.handler,
         target: params.target,
         outerCallback: params.outerCallback
@@ -183,11 +231,11 @@ var UI_BLOCKS = (function(ub) {
   /**
    * Handles events in generic way, basically runs provided outer callbacks.
    */
-  UIBasePanel.prototype.genericEventHandler = function(eventId, event) {
+  UIBasePanel.prototype.genericEventHandler = function(eventId, event, expectedTarget) {
     var that = this;
     event.preventDefault();
     if (that.handlersSettings[eventId].outerCallback) {
-      that.handlersSettings[eventId].outerCallback(event.target);
+      that.handlersSettings[eventId].outerCallback(expectedTarget);
     }
   };
 

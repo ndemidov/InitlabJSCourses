@@ -10,7 +10,7 @@ var UI_CONTROL = (function(uc) {
     'jscHeaderPanel': [
         {
           event: 'click',
-          target: 'jscHeaderPanelLogout',
+          target: '#jscHeaderPanelLogout',
 
           /**
            * Handles user logout.
@@ -25,7 +25,7 @@ var UI_CONTROL = (function(uc) {
         },
         {
           event: 'click',
-          target: 'jscHeaderPanelNewClient',
+          target: '#jscHeaderPanelNewClient',
 
           /**
            * Opens Register Client Panel.
@@ -39,7 +39,7 @@ var UI_CONTROL = (function(uc) {
         },
         {
           event: 'click',
-          target: 'jscHeaderPanelNewWorker',
+          target: '#jscHeaderPanelNewWorker',
 
           /**
            * Opens Register Worker Panel .
@@ -51,11 +51,30 @@ var UI_CONTROL = (function(uc) {
             }
           }
         },
+        {
+          event: 'click',
+          target: '#jscHeaderPanelBack',
+
+          /**
+           * Returnes to task list.
+           */
+          callback: function() {
+            refreshTaskList();
+            handleRightsControlledVisibility();
+            var previousContentBlock = mainContentCurrentBlock;
+            mainContentCurrentBlock = 'jscTaskListPanel';
+            refreshHeader();
+
+            blocks[previousContentBlock].hide(function() {
+              blocks[mainContentCurrentBlock].show();
+            });
+          }
+        }
       ],
     'jscLoginPanel': [
         {
           event: 'submit',
-          target: 'jscLoginPanelForm',
+          target: '#jscLoginPanelForm',
 
           /**
            * Handles user login.
@@ -76,8 +95,10 @@ var UI_CONTROL = (function(uc) {
             blocks[mainContentCurrentBlock].hide(function() {
               resetForm(target);
               blocks['jscHeaderPanel'].show();
-              handleRightsControlledVisibility();
               mainContentCurrentBlock = 'jscTaskListPanel';
+              refreshTaskList();
+              refreshHeader();
+              handleRightsControlledVisibility();
               blocks[mainContentCurrentBlock].show();
             });
           }
@@ -86,7 +107,7 @@ var UI_CONTROL = (function(uc) {
     'jscCreateTaskPanel': [
         {
           event: 'submit',
-          target: 'jscCreateTaskPanelForm',
+          target: '#jscCreateTaskPanelForm',
 
           /**
            * Handles new task creation.
@@ -135,9 +156,10 @@ var UI_CONTROL = (function(uc) {
               return;
             }
 
-            //APP_DATA.createNewTask(formData);
+            APP_DATA.createNewTask(formData);
 
             refreshTaskList();
+            handleRightsControlledVisibility(blocks['jscTaskListPanel'].el);
             blocks['jscCreateTaskPanel'].hide(function() {
               resetForm(blocks['jscAssignClientPanel'].el.querySelector('#jscAssignClientPanelForm'));
               resetForm(blocks['jscAssignWorkerPanel'].el.querySelector('#jscAssignWorkerPanelForm'));
@@ -147,7 +169,7 @@ var UI_CONTROL = (function(uc) {
         },
         {
           event: 'click',
-          target: 'jscCreateTaskPanelAssignWorker',
+          target: '#jscCreateTaskPanelAssignWorker',
 
           /**
            * Handles open of Assign Worker Panel.
@@ -159,7 +181,7 @@ var UI_CONTROL = (function(uc) {
         },
         {
           event: 'click',
-          target: 'jscCreateTaskPanelAssignClient',
+          target: '#jscCreateTaskPanelAssignClient',
 
           /**
            * Handles open of Assign Client Panel.
@@ -171,7 +193,7 @@ var UI_CONTROL = (function(uc) {
         },
         {
           event: 'click',
-          target: 'jscCreateTaskPanelClose',
+          target: '#jscCreateTaskPanelClose',
 
           /**
            * Handles form close.
@@ -188,7 +210,7 @@ var UI_CONTROL = (function(uc) {
     'jscTaskListPanel': [
         {
           event: 'click',
-          target: 'jscTaskListPanelCreateTask',
+          target: '#jscTaskListPanelCreateTask',
 
           /**
            * Handles open of Create Task Panel.
@@ -200,6 +222,29 @@ var UI_CONTROL = (function(uc) {
               blocks[activePopupCurrentBlock].show();
             }
           }
+        },
+        {
+          event: 'click',
+          target: '.jscTaskListItem',
+
+          /**
+           * Handles click on list item.
+           */
+          callback: function(target) {
+            var taskId = null;
+            if (!target) {
+              return;
+            }
+            taskId = target.getAttribute('id');
+            console.log(taskId);
+
+            blocks[mainContentCurrentBlock].hide(function() {
+              mainContentCurrentBlock = 'jscTaskViewPanel';
+              refreshHeader();
+              refreshTaskView(taskId);
+              blocks[mainContentCurrentBlock].show();
+            });
+          }
         }
       ],
     'jscTaskViewPanel': [
@@ -210,7 +255,7 @@ var UI_CONTROL = (function(uc) {
     'jscCreateCommentPanel': [
         {
           event: 'click',
-          target: 'jscCreateCommentPanelClose',
+          target: '#jscCreateCommentPanelClose',
 
           /**
            * Handles panel close.
@@ -223,7 +268,7 @@ var UI_CONTROL = (function(uc) {
     'jscRegisterClientPanel': [
         {
           event: 'click',
-          target: 'jscRegisterClientPanelClose',
+          target: '#jscRegisterClientPanelClose',
 
           /**
            * Handles panel close.
@@ -234,7 +279,7 @@ var UI_CONTROL = (function(uc) {
         },
         {
           event: 'submit',
-          target: 'jscRegisterClientPanelForm',
+          target: '#jscRegisterClientPanelForm',
 
           /**
            * Handles new Client user creation.
@@ -253,7 +298,7 @@ var UI_CONTROL = (function(uc) {
     'jscRegisterWorkerPanel': [
         {
           event: 'click',
-          target: 'jscRegisterWorkerPanelClose',
+          target: '#jscRegisterWorkerPanelClose',
 
           /**
            * Handles panel close.
@@ -264,7 +309,7 @@ var UI_CONTROL = (function(uc) {
         },
         {
           event: 'submit',
-          target: 'jscRegisterWorkerPanelForm',
+          target: '#jscRegisterWorkerPanelForm',
 
           /**
            * Handles new Worker user creation.
@@ -283,7 +328,7 @@ var UI_CONTROL = (function(uc) {
     'jscEditTaskPanel': [
         {
           event: 'click',
-          target: 'jscEditTaskPanelClose',
+          target: '#jscEditTaskPanelClose',
 
           /**
            * Handles panel close.
@@ -296,7 +341,7 @@ var UI_CONTROL = (function(uc) {
     'jscAssignWorkerPanel': [
         {
           event: 'click',
-          target: 'jscAssignWorkerPanelClose',
+          target: '#jscAssignWorkerPanelClose',
 
           /**
            * Handles panel close.
@@ -307,7 +352,7 @@ var UI_CONTROL = (function(uc) {
         },
         {
           event: 'submit',
-          target: 'jscAssignWorkerPanelForm',
+          target: '#jscAssignWorkerPanelForm',
 
           callback: function(target) {
             var formData = getFormData(target);
@@ -328,7 +373,7 @@ var UI_CONTROL = (function(uc) {
     'jscAssignClientPanel': [
         {
           event: 'click',
-          target: 'jscAssignClientPanelClose',
+          target: '#jscAssignClientPanelClose',
 
           /**
            * Handles panel close.
@@ -339,7 +384,7 @@ var UI_CONTROL = (function(uc) {
         },
         {
           event: 'submit',
-          target: 'jscAssignClientPanelForm',
+          target: '#jscAssignClientPanelForm',
 
           callback: function(target) {
             var formData = getFormData(target);
@@ -389,15 +434,23 @@ var UI_CONTROL = (function(uc) {
   /**
    * Shows/hides elements that are intended to be displayed only for users with certain roles.
    */
-  function handleRightsControlledVisibility() {
+  function handleRightsControlledVisibility(panelElem) {
     if (!AUTH.getUser()) {
       return;
     }
-    var rightsControlledElems = document.getElementsByClassName('rightsControlled');
+
+    var containerElem;
+    if (panelElem) {
+      containerElem = panelElem;
+    }
+    else {
+      containerElem = document;
+    }
+    var rightsControlledElems = containerElem.querySelectorAll('.rightsControlled');
     for (var i = 0; i < rightsControlledElems.length; i++) {
       var rcElem = rightsControlledElems[i];
-      if (verifyRights(rcElem.getAttribute('showTo'))) {
-        rcElem.style.display = 'block';
+      if (verifyRights(rcElem.getAttribute('showto'))) {
+        rcElem.style.display = '';
       }
       else {
         rcElem.style.display = 'none';
@@ -426,7 +479,6 @@ var UI_CONTROL = (function(uc) {
     if (jaw) {
       formData['worker'] = jaw.getAttribute('value');
     }
-    console.log(formData);
     return formData;
   }
 
@@ -458,7 +510,7 @@ var UI_CONTROL = (function(uc) {
    }
 
   /**
-   * Resets entered data in a form.
+   * Resets data entered in a form.
    */
   function resetForm(formElem) {
     var inputs = formElem.querySelectorAll('.form-control');
@@ -506,14 +558,7 @@ var UI_CONTROL = (function(uc) {
       return false;
     }
 
-    APP_DATA.addEnt('users', {
-      'username': usernameValue,
-      'role': role,
-      'tasks': []
-    });
-
-    APP_DATA.saveGrp('users');
-    return true;
+    return APP_DATA.createNewUser(usernameValue, role);
   }
 
   /**
@@ -523,18 +568,161 @@ var UI_CONTROL = (function(uc) {
     var taskList = blocks['jscTaskListPanel'];
     var tableBody = taskList.el.querySelector('tbody');
     var markup = "";
-    var list = APP_DATA.get().tasks;
-    for (var id in list) {
-      var task = list[id];
-      markup += '<tr id="' + id + '">';
-      markup += '<td>' + UTILS.capitalizeFirstLetter(CONFIG.status[task.data.status]) + '</td>';
-      markup += '<td class="rightsControlled" showTo="0,2">' + UTILS.capitalizeFirstLetter(CONFIG.priority[task.data.priority]) + '</td>';
-      markup += '<td>' + task.data.title + '</td>';
-      markup += '<td class="rightsControlled" showTo="0,2">' + task.data.deadline + '</td>'
-      markup += '</tr>';
+
+    // Creates list item markup for task.
+    function getMarkup(task) {
+      var mrkp = "";
+
+      var date = '&nbsp;';
+      if (task.data.deadline !== '') {
+        date = UTILS.formatTimestamp(+task.data.deadline);
+      }
+
+      mrkp += '<tr id="' + task.id + '" class="jscTaskListItem">';
+      mrkp += '<td>' + UTILS.capitalizeFirstLetter(CONFIG.status[task.data.status]) + '</td>';
+      mrkp += '<td class="rightsControlled" showto="0,2">' + UTILS.capitalizeFirstLetter(CONFIG.priority[task.data.priority]) + '</td>';
+      mrkp += '<td>' + task.data.title + '</td>';
+      mrkp += '<td class="rightsControlled" showTo="0,2">' + date + '</td>';
+      mrkp += '</tr>';
+      return mrkp;
     }
 
-    console.log(markup);
+    // Get list of tasks assigned to user, get all existing tasks for admin.
+    if (AUTH.getUser().data.role !== '0') {
+      var list = AUTH.getUser().data.tasks;
+      for (var i = 0; i < list.length; i++) {
+        var task = APP_DATA.get().tasks[list[i]];
+        markup += getMarkup(task);
+      }
+    }
+    else {
+      var list = APP_DATA.get().tasks;
+      for (var id in list) {
+        var task = list[id];
+        markup += getMarkup(task);
+      }
+    }
+    tableBody.innerHTML = markup;
+
+    // Hide or show empty list notice.
+    var emptyListNotice = taskList.el.querySelector('#tasksEmpty');
+    if (markup !== "") {
+      emptyListNotice.style.display = 'none';
+    }
+    else {
+      emptyListNotice.style.display = '';
+    }
+  }
+
+  /**
+   * Refreshes Task View.
+   */
+  function refreshTaskView(taskId) {
+
+    var taskViewElem = blocks['jscTaskViewPanel'].el;
+    var taskData = APP_DATA.get().tasks[taskId].data;
+
+    // Creates markup for task's inner info.
+    function createInnerInfoMarkup() {
+      var markup = '';
+
+      var date = UTILS.formatTimestamp(+taskData.date);
+      var priority = UTILS.capitalizeFirstLetter(CONFIG.priority[taskData.priority]);
+      var estimated = '&nbsp;';
+      if (taskData.estimated !== '') {
+        estimated = taskData.estimated + ' hours';
+      }
+      var deadline = '&nbsp;'
+      if (taskData.deadline !== '') {
+        deadline = UTILS.formatTimestamp(+taskData.deadline);
+      }
+      var completion = taskData.completion + '%';
+
+      markup += '<tr>' +
+                  '<td>' + date + '</td>' +
+                  '<td>' + priority + '</td>' +
+                  '<td>' + estimated + '</td>' +
+                  '<td>' + deadline + '</td>' +
+                  '<td>' + completion + '</td>' +
+                '</tr>'
+      return markup;
+    }
+
+    // Creates comment markup.
+    function createCommentMarkup(comment) {
+      var markup = '';
+
+      var author = '';
+      if (APP_DATA.users[comment.data.author]) {
+        author = APP_DATA.users[comment.data.author].data.username;
+      }
+
+      var date = UTILS.formatTimestamp(+comment.data.date, true);
+
+      markup += '<div id="' + comment.id + '" class="col-md-12">' +
+                  '<div class="col-md-12">' +
+                    '<span class="jscTaskViewPanelCommentAuthor col-md-6 text-left">' + author + '</span>' +
+                    '<span class="jscTaskViewPanelCommentDate col-md-6 text-right">' + date + '</span>' +
+                  '</div>' +
+                  '<div class="panel panel-default col-md-12">' +
+                    '<div class="panel-body">' +
+                      '<div class="jscTaskViewPanelCommentText">' + comment.data.text + '</div>' +
+                    '</div>' +
+                  '</div>' +
+                '</div>';
+      return markup;
+    }
+
+
+    taskViewElem.querySelector('tbody').innerHTML = createInnerInfoMarkup();
+    taskViewElem.querySelector('#jscTaskViewPanelStatus').innerHTML = UTILS.capitalizeFirstLetter(CONFIG.status[taskData.status]);
+
+    var clientName = 'No client assigned yet';
+    if (taskData.client && taskData.client !== '' && APP_DATA.get().users[taskData.client]) {
+     clientName = UTILS.capitalizeFirstLetter(APP_DATA.get().users[taskData.client].data.username);
+    }
+    taskViewElem.querySelector('#jscTaskViewPanelClient').innerHTML = clientName;
+
+    var workerName = 'No worker assigned yet';
+    if (taskData.worker && taskData.worker !== '' && APP_DATA.get().users[taskData.worker]) {
+     workerName = UTILS.capitalizeFirstLetter(APP_DATA.get().users[taskData.worker].data.username);
+    }
+    taskViewElem.querySelector('#jscTaskViewPanelWorker').innerHTML = workerName;
+
+    taskViewElem.querySelector('#jscTaskViewPanelTitle').innerHTML = taskData.title;
+    taskViewElem.querySelector('#jscTaskViewPanelDescription').innerHTML = taskData.description;
+
+    var commentsMarkup = '';
+    for (var i = 0; i < taskData.comments.length; i++) {
+      var commentId = taskData.comments[i];
+      commentsMarkup += createCommentMarkup(APP_DATA.get().comments[commentId]);
+    }
+    taskViewElem.querySelector('.jscTaskViewPanelCommentsContainer').innerHTML = commentsMarkup;
+
+    if (commentsMarkup !== '') {
+      taskViewElem.querySelector('#commentsEmpty').style.display = 'none';
+    }
+    else {
+      taskViewElem.querySelector('#commentsEmpty').style.display = '';
+    }
+
+  }
+
+
+
+  /**
+   * Refresh header panel.
+   */
+  function refreshHeader() {
+     var headerElem = blocks['jscHeaderPanel'].el;
+     headerElem.querySelector('#jscHeaderPanelUsername').innerHTML = UTILS.capitalizeFirstLetter(AUTH.getUser().data.username);
+     var backButton = headerElem.querySelector('#jscHeaderPanelBack');
+     if (mainContentCurrentBlock === 'jscTaskListPanel') {
+       UTILS.removeClass(backButton, 'visible');
+     }
+     else if (mainContentCurrentBlock === 'jscTaskViewPanel') {
+       UTILS.addClass(backButton, 'visible');
+     }
   }
 
   /**
@@ -545,6 +733,8 @@ var UI_CONTROL = (function(uc) {
     initBlocks();
 
     if (AUTH.getUser()) {
+      refreshTaskList();
+      refreshHeader();
       handleRightsControlledVisibility();
       blocks['jscHeaderPanel'].show();
       mainContentCurrentBlock = 'jscTaskListPanel';

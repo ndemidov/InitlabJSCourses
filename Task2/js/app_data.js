@@ -22,6 +22,7 @@ var APP_DATA = (function(adt) {
         appdata[groupName][id] = new CONFIG.entities[groupName].class(id, data);
       }
     }
+    return id;
   }
 
   /**
@@ -69,9 +70,11 @@ var APP_DATA = (function(adt) {
 
       }
     }
-
   }
 
+  /**
+   * Finds user by username.
+   */
   function findUserByName(username) {
     var resultData = false;
     for (var uid in appdata.users) {
@@ -83,6 +86,9 @@ var APP_DATA = (function(adt) {
     return resultData
   }
 
+  /**
+   * Gets users with specified roles.
+   */
   function getUsers(role) {
     var resultList = {};
     var wList = appdata.users;
@@ -94,24 +100,54 @@ var APP_DATA = (function(adt) {
     return resultList;
   }
 
+  /**
+   * Creates new user.
+   */
+  function createNewUser(username, role) {
+    if (findUserByName(username)) {
+      return false;
+    }
+    addEntity('users', {
+      'username': username,
+      'role': role,
+      'tasks': []
+    });
+    saveGroup('users');
+    return true;
+  }
+
+  /**
+   * Creates new task.
+   */
   function createNewTask(formData) {
     var data = {};
     var now = new Date();
 
     data.client = formData.client;
     data.worker = formData.worker || '';
-    data.status = '1';
+    data.status = '2';
     data.title = formData.title;
     data.description = formData.description;
     data.priority = formData.priority || '1';
     data.estimated = formData.estimated || '';
     data.deadline = formData.deadline || '';
+    if (data.deadline !== '') {
+      data.deadline = UTILS.parseDate(data.deadline).getTime();
+    }
     data.completion = '0';
     data.date = now.getTime();
     data.comments = [];
 
-    addEntity('tasks', data);
+    var tid = addEntity('tasks', data);
     saveGroup('tasks');
+
+    if (appdata.users[data.client]) {
+      appdata.users[data.client].assignTask(tid);
+    }
+    if (data.worker && appdata.users[data.worker]) {
+      appdata.users[data.worker].assignTask(tid);
+    }
+    saveGroup('users');
   }
 
   // Exports.
@@ -122,6 +158,7 @@ var APP_DATA = (function(adt) {
   adt.saveAll = saveAll;
   adt.findUserByName = findUserByName;
   adt.getUsers = getUsers;
+  adt.createNewUser = createNewUser;
   adt.createNewTask = createNewTask;
 
   return adt;
