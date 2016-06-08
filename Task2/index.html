@@ -286,7 +286,7 @@
                 <h3 class="panel-title">Create new comment</h3>
               </div>
               <div class="panel-body">
-                <form>
+                <form id="jscCreateCommentPanelForm">
                   <div class="form-group col-md-12">
                     <label for="jscCreateCommentPanelInputText">Comment</label>
                     <textarea type="text" class="form-control" id="jscCreateCommentPanelInputText" name="text" placeholder="Type your comment here.."></textarea>
@@ -355,7 +355,7 @@
                 <h3 class="panel-title">Edit task</h3>
               </div>
               <div class="panel-body">
-                <form class="jscEditTaskPanelForm">
+                <form id="jscEditTaskPanelForm">
                   <div class="form-group col-md-12">
                     <label for="jscEditTaskPanelInputTitle">Title</label>
                     <input type="text" class="form-control" id="jscEditTaskPanelInputTitle" name="title" placeholder="Task title">
@@ -374,7 +374,7 @@
                           <p id="jscEditTaskPanelInputWorkerName" class="jscAssignedWorker" value="">No worker assigned yet</p>
                         </span>
                         <span class="col-md-6">
-                          <button id="jscEditTaskPanelSubmit" class="btn btn-default" allowedTo="0">Assign worker</button>
+                          <button id="jscEditTaskPanelAssignWorker" class="btn btn-default" allowedTo="0">Assign worker</button>
                         </span>
                       </div>
                     </div>
@@ -382,7 +382,7 @@
                       <label for="jscEditTaskPanelInputPriority">Priority</label>
                       <select class="form-control" id="jscEditTaskPanelInputPriority" name="priority">
                         <option value="0">Low</option>
-                        <option value="1">Medium</option>
+                        <option value="1">Normal</option>
                         <option value="2">High</option>
                         <option value="3">Critical</option>
                       </select>

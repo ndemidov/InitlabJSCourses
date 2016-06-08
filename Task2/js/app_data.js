@@ -51,6 +51,16 @@ var APP_DATA = (function(adt) {
   }
 
   /**
+   * Removes all appdata.
+   */
+  function dropAll() {
+    for (var key in appdata) {
+      APP_STORAGE.removeGrp(key, true);
+    }
+    APP_STORAGE.removeGrp('auth');
+  }
+
+  /**
    * Initialize in-memory storage module.
    */
   function init() {
@@ -101,7 +111,7 @@ var APP_DATA = (function(adt) {
   }
 
   /**
-   * Creates new user.
+   * Creates and saves new user.
    */
   function createNewUser(username, role) {
     if (findUserByName(username)) {
@@ -117,7 +127,7 @@ var APP_DATA = (function(adt) {
   }
 
   /**
-   * Creates new task.
+   * Creates and saves new task.
    */
   function createNewTask(formData) {
     var data = {};
@@ -148,6 +158,49 @@ var APP_DATA = (function(adt) {
       appdata.users[data.worker].assignTask(tid);
     }
     saveGroup('users');
+
+    return true;
+  }
+
+  function updateTask(taskId, formData) {
+    var task = appdata.tasks[taskId];
+    var changed = false;
+
+    if (formData.deadline && formData.deadline !== "") {
+      formData.deadline = UTILS.parseDate(formData.deadline).getTime();
+    }
+
+    for (var key in formData) {
+      if (task.data[key] && task.data[key] !== formData[key]) {
+        task.data[key] = formData[key];
+        changed = true;
+      }
+    }
+
+    if (changed) {
+      saveGroup('tasks');
+    }
+
+    return changed;
+  }
+
+  /**
+   * Creates and saves new comment.
+   */
+  function createNewComment(commentData) {
+    var now = new Date();
+
+    commentData.date = now.getTime();
+
+    var cid = addEntity('comments', commentData);
+    saveGroup('comments');
+
+    if (appdata.tasks[commentData.task]) {
+      appdata.tasks[commentData.task].assignComment(cid);
+    }
+    saveGroup('tasks');
+
+    return true;
   }
 
   // Exports.
@@ -156,10 +209,14 @@ var APP_DATA = (function(adt) {
   adt.addEnt = addEntity;
   adt.saveGrp = saveGroup;
   adt.saveAll = saveAll;
+  adt.dropAll = dropAll;
   adt.findUserByName = findUserByName;
   adt.getUsers = getUsers;
   adt.createNewUser = createNewUser;
   adt.createNewTask = createNewTask;
+  adt.updateTask = updateTask;
+  adt.createNewComment = createNewComment;
+
 
   return adt;
 })(APP_DATA || {});

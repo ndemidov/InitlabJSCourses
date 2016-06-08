@@ -68,13 +68,18 @@ var APP_STORAGE = (function(strg) {
   /**
    * Removes group of entities.
    */
-  function removeEntityGroup(name) {
+  function removeEntityGroup(name, removeIds) {
     if (!isAvailable()) {
       return false;
     }
 
-    name = namespacePrefix + name;
-    localStorage.removeItem(name);
+    var groupName = namespacePrefix + name;
+    localStorage.removeItem(groupName);
+
+    if (removeIds) {
+      var idsKey = namespacePrefix + idIncrementPrefix + name;
+      localStorage.removeItem(idsKey);
+    }
   }
 
   // Exports.

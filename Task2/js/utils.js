@@ -77,8 +77,8 @@ var UTILS = (function(utls) {
    */
   function createMarkupSelect(values, addEmpty, defaultValue) {
     var markup = '';
-    if (addEmpty === true) {
-      markup += '<option value="">--Select Worker--</option>';
+    if (addEmpty) {
+      markup += '<option value="">--' + addEmpty + '--</option>';
     }
     for (var value in values) {
       var selected = "";
@@ -91,6 +91,16 @@ var UTILS = (function(utls) {
   }
 
   /**
+   * Adds 0 in front of digits that are < 10 for date entities.
+   */
+  var beautifyDateEnt = function(num) {
+    if (num < 10) {
+      return '0' + num;
+    }
+    return num;
+  };
+
+  /**
    * Parses string from date typed input into Date instance.
    */
   function parseDate(s) {
@@ -99,25 +109,30 @@ var UTILS = (function(utls) {
   }
 
   /**
+   * Stringify's date to yyyy-MM-dd format.
+   */
+  function stringifyDate(d) {
+    var str = "";
+    return beautifyDateEnt(d.getFullYear()) + '-' +
+           beautifyDateEnt(d.getMonth() + 1) + '-' +
+           beautifyDateEnt(d.getDate());
+  }
+
+  /**
    * Formats UNIX timestamp to human readable form.
    */
   function formatTimestamp(timestamp, includeTime) {
     var dateString = '';
+
     var date = new Date(timestamp);
     var year = date.getFullYear();
-    var month = date.getMonth() + 1;
-    if (month < 10) {
-      month = '0' + month;
-    }
-    var day = date.getDate();
-    if (day < 10) {
-      day = '0' + day;
-    }
+    var month = beautifyDateEnt(date.getMonth() + 1);
+    var day = beautifyDateEnt(date.getDate());
     dateString = day + '.' + month + '.' + year;
 
     if (includeTime) {
-      var hours = date.getHours();
-      var minutes = date.getMinutes();
+      var hours = beautifyDateEnt(date.getHours());
+      var minutes = beautifyDateEnt(date.getMinutes());
       dateString += ' ' + hours + ':' + minutes;
     }
     return dateString;
@@ -132,6 +147,7 @@ var UTILS = (function(utls) {
   utls.removeClass = removeClass;
   utls.createMarkupSelect = createMarkupSelect;
   utls.parseDate = parseDate;
+  utls.stringifyDate = stringifyDate;
   utls.formatTimestamp = formatTimestamp;
 
   return utls;

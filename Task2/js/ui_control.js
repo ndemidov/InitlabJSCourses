@@ -2,6 +2,7 @@ var UI_CONTROL = (function(uc) {
 
   var mainContentCurrentBlock = null;
   var activePopupCurrentBlock = null;
+  var currentTask = null;
 
   var blocks = {};
 
@@ -113,58 +114,17 @@ var UI_CONTROL = (function(uc) {
            * Handles new task creation.
            */
           callback: function(target) {
-
             var formData = getFormData(target);
 
-            if (AUTH.getUser().data.role === '1') {
-              formData.client = AUTH.getUser().id;
+            if (saveNewTask(formData)) {
+              refreshTaskList();
+              handleRightsControlledVisibility(blocks['jscTaskListPanel'].el);
+              blocks['jscCreateTaskPanel'].hide(function() {
+                resetForm(blocks['jscAssignClientPanel'].el.querySelector('#jscAssignClientPanelForm'));
+                resetForm(blocks['jscAssignWorkerPanel'].el.querySelector('#jscAssignWorkerPanelForm'));
+                resetForm(target);
+              });
             }
-
-            var isValid = true;
-            if (!VALIDATE.userId(formData.client)) {
-              console.log('Client is invalid');
-              isValid = false;
-            }
-
-            if (!VALIDATE.title(formData.title)) {
-              console.log('Title is invalid');
-              isValid = false;
-            }
-
-            if (!VALIDATE.description(formData.description)) {
-              console.log('Description is invalid');
-              isValid = false;
-            }
-
-            if (!VALIDATE.priority(formData.priority)) {
-              console.log('Priority is invalid');
-              isValid = false;
-            }
-
-            if (formData.estimated !== "" && !VALIDATE.estimated(formData.estimated)) {
-              console.log('Estimated is invalid');
-              isValid = false;
-            }
-
-            if (formData.estimated !== "" && !VALIDATE.deadline(formData.deadline)) {
-              console.log('Deadline is invalid');
-              isValid = false;
-            }
-
-            if (!isValid) {
-              console.log("Form did not pass validation");
-              return;
-            }
-
-            APP_DATA.createNewTask(formData);
-
-            refreshTaskList();
-            handleRightsControlledVisibility(blocks['jscTaskListPanel'].el);
-            blocks['jscCreateTaskPanel'].hide(function() {
-              resetForm(blocks['jscAssignClientPanel'].el.querySelector('#jscAssignClientPanelForm'));
-              resetForm(blocks['jscAssignWorkerPanel'].el.querySelector('#jscAssignWorkerPanelForm'));
-              resetForm(target);
-            });
           }
         },
         {
@@ -236,7 +196,7 @@ var UI_CONTROL = (function(uc) {
               return;
             }
             taskId = target.getAttribute('id');
-            console.log(taskId);
+            currentTask = taskId;
 
             blocks[mainContentCurrentBlock].hide(function() {
               mainContentCurrentBlock = 'jscTaskViewPanel';
@@ -249,10 +209,50 @@ var UI_CONTROL = (function(uc) {
       ],
     'jscTaskViewPanel': [
         {
+          event: 'click',
+          target: '#jscTaskViewPanelCreateComment',
 
+          /**
+           * Handles create comment button.
+           */
+          callback: function() {
+            blocks['jscCreateCommentPanel'].show();
+          }
+        },
+        {
+          event: 'click',
+          target: '#jscTaskViewPanelEditTask',
+
+          /**
+           * Handles edit task button.
+           */
+          callback: function() {
+            activePopupCurrentBlock = 'jscEditTaskPanel';
+            prefillTaskEditForm(currentTask);
+            prefillAssignUserForm('2', currentTask);
+            blocks[activePopupCurrentBlock].show();
+          }
         }
       ],
     'jscCreateCommentPanel': [
+        {
+          event: 'submit',
+          target: '#jscCreateCommentPanelForm',
+
+          /**
+           * Handles create new comment.
+           */
+          callback: function(target) {
+            var formData = getFormData(target);
+
+            if (saveNewComment(formData)) {
+              refreshTaskView(currentTask);
+              blocks['jscCreateCommentPanel'].hide(function() {
+                resetForm(target);
+              });
+            }
+          }
+        },
         {
           event: 'click',
           target: '#jscCreateCommentPanelClose',
@@ -334,7 +334,41 @@ var UI_CONTROL = (function(uc) {
            * Handles panel close.
            */
           callback: function() {
-            blocks['jscEditTaskPanel'].hide();
+            blocks['jscEditTaskPanel'].hide(function() {
+              resetForm(blocks['jscEditTaskPanel'].el.querySelector('#jscEditTaskPanelForm'));
+            });
+          }
+        },
+        {
+          event: 'click',
+          target: '#jscEditTaskPanelAssignWorker',
+
+          /**
+           * Handles open of Assign Worker Panel.
+           */
+          callback: function() {
+            blocks['jscAssignWorkerPanel'].show();
+          }
+        },
+        {
+          event: 'submit',
+          target: '#jscEditTaskPanelForm',
+
+          /**
+           * Handles task edit.
+           */
+          callback: function(target) {
+            var formData = getFormData(target);
+
+            if (saveTaskChanges(currentTask, formData)) {
+              refreshTaskList();
+              refreshTaskView(currentTask);
+              handleRightsControlledVisibility(blocks['jscTaskListPanel'].el);
+              blocks['jscEditTaskPanel'].hide(function() {
+                resetForm(blocks['jscAssignWorkerPanel'].el.querySelector('#jscAssignWorkerPanelForm'));
+                resetForm(target);
+              });
+            }
           }
         }
       ],
@@ -483,13 +517,6 @@ var UI_CONTROL = (function(uc) {
   }
 
   /**
-   * Prefills Task Edit form with data.
-   */
-  function prefillTaskEditForm() {
-
-  }
-
-  /**
    * Prefills Assign Worker form.
    */
    function prefillAssignUserForm(role, taskId) {
@@ -503,9 +530,12 @@ var UI_CONTROL = (function(uc) {
      var usersList = APP_DATA.getUsers(role);
      var dVal = null;
      if (taskId) {
-       dVal = APP_DATA.get().tasks[taskId][userTitle];
+       dVal = APP_DATA.get().tasks[taskId].data[userTitle];
+       if (activePopupCurrentBlock) {
+         blocks[activePopupCurrentBlock].el.querySelector('.jscAssigned' + cUserTitle).setAttribute('value', dVal);
+       }
      }
-     var markup = UTILS.createMarkupSelect(usersList, true, dVal);
+     var markup = UTILS.createMarkupSelect(usersList, 'Select user', dVal);
      formSelect.innerHTML = markup;
    }
 
@@ -559,6 +589,146 @@ var UI_CONTROL = (function(uc) {
     }
 
     return APP_DATA.createNewUser(usernameValue, role);
+  }
+
+  /**
+   * Validates and saves new task.
+   */
+  function saveNewTask(formData) {
+    if (AUTH.getUser().data.role === '1') {
+      formData.client = AUTH.getUser().id;
+    }
+
+    var isValid = true;
+    if (!VALIDATE.userId(formData.client)) {
+      console.log('Client is invalid');
+      isValid = false;
+    }
+
+    if (!VALIDATE.title(formData.title)) {
+      console.log('Title is invalid');
+      isValid = false;
+    }
+
+    if (!VALIDATE.description(formData.description)) {
+      console.log('Description is invalid');
+      isValid = false;
+    }
+
+    if (!VALIDATE.priority(formData.priority)) {
+      console.log('Priority is invalid');
+      isValid = false;
+    }
+
+    if (formData.estimated !== "" && !VALIDATE.estimated(formData.estimated)) {
+      console.log('Estimated is invalid');
+      isValid = false;
+    }
+
+    if (formData.deadline !== "" && !VALIDATE.deadline(formData.deadline)) {
+      console.log('Deadline is invalid');
+      isValid = false;
+    }
+
+    if (!isValid) {
+      console.log("Form did not pass validation");
+      return;
+    }
+
+    return APP_DATA.createNewTask(formData);
+  }
+
+  /**
+   * Saves changes to task.
+   */
+  function saveTaskChanges(taskId, formData) {
+    console.log(formData);
+
+    var isValid = true;
+
+    if (!VALIDATE.title(formData.title)) {
+      console.log('Title is invalid');
+      isValid = false;
+    }
+
+    if (!VALIDATE.description(formData.description)) {
+      console.log('Description is invalid');
+      isValid = false;
+    }
+
+    if (verifyRights('0')) {
+      if (!VALIDATE.userId(formData.worker)) {
+        console.log('Worker is invalid');
+        isValid = false;
+      }
+
+      if (!VALIDATE.priority(formData.priority)) {
+        console.log('Priority is invalid');
+        isValid = false;
+      }
+
+      if (formData.estimated !== "" && !VALIDATE.estimated(formData.estimated)) {
+        console.log('Estimated is invalid');
+        isValid = false;
+      }
+
+      if (formData.deadline !== "" && !VALIDATE.deadline(formData.deadline)) {
+        console.log('Deadline is invalid');
+        isValid = false;
+      }
+    }
+    else {
+      delete formData.worker;
+      delete formData.priority;
+      delete formData.estimated;
+      delete formData.deadline;
+    }
+
+    if (!VALIDATE.status(formData.status)) {
+      console.log('Status is invalid');
+      isValid = false;
+    }
+
+    if (verifyRights('0, 2')) {
+      if (!VALIDATE.completion(formData.completion)) {
+        console.log('Completion is invalid');
+        isValid = false;
+      }
+    }
+    else {
+      delete formData.completion;
+    }
+
+    if (!isValid) {
+      console.log("Form did not pass validation");
+      return;
+    }
+
+    var changed = APP_DATA.updateTask(taskId, formData);
+
+    if (!changed) {
+      console.log("All values are the same, no changes were made");
+    }
+
+    return changed;
+  }
+
+  /**
+   * Validates and saves new comment.
+   */
+  function saveNewComment(commentData) {
+    if (!VALIDATE.comment(commentData.text)) {
+      console.log('Comment text is invalid');
+      return false;
+    }
+
+    var author = AUTH.getUser().id;
+    var task = currentTask;
+
+    commentData.author = author;
+    commentData.task = currentTask;
+
+    return APP_DATA.createNewComment(commentData);
   }
 
   /**
@@ -653,8 +823,9 @@ var UI_CONTROL = (function(uc) {
       var markup = '';
 
       var author = '';
-      if (APP_DATA.users[comment.data.author]) {
-        author = APP_DATA.users[comment.data.author].data.username;
+      if (APP_DATA.get().users[comment.data.author]) {
+        author = APP_DATA.get().users[comment.data.author].data.username;
+        author = UTILS.capitalizeFirstLetter(author);
       }
 
       var date = UTILS.formatTimestamp(+comment.data.date, true);
@@ -708,7 +879,38 @@ var UI_CONTROL = (function(uc) {
 
   }
 
+  /**
+   * Prefills Task Edit form with data.
+   */
+  function prefillTaskEditForm(taskId) {
+    var editFormElem = blocks['jscEditTaskPanel'].el;
+    var taskData = APP_DATA.get().tasks[taskId].data;
 
+    editFormElem.querySelector('#jscEditTaskPanelInputTitle').value = taskData.title;
+    editFormElem.querySelector('#jscEditTaskPanelInputDescription').value = taskData.description;
+
+    if (verifyRights('0')) {
+      var workerName = 'No worker assigned yet';
+      if (taskData.worker && taskData.worker !== '' && APP_DATA.get().users[taskData.worker]) {
+       workerName = UTILS.capitalizeFirstLetter(APP_DATA.get().users[taskData.worker].data.username);
+      }
+      editFormElem.querySelector('#jscEditTaskPanelInputWorkerName').innerHTML = workerName;
+
+      editFormElem.querySelector('#jscEditTaskPanelInputPriority').value = taskData.priority;
+      editFormElem.querySelector('#jscEditTaskPanelInputEstimated').value = taskData.estimated;
+
+      var deadline = taskData.deadline;
+      if (deadline && deadline !== '') {
+        editFormElem.querySelector('#jscEditTaskPanelInputDeadline').value = UTILS.stringifyDate(new Date(+deadline));
+      }
+    }
+
+    editFormElem.querySelector('#jscEditTaskPanelInputStatus').value = taskData.status;
+
+    if (verifyRights('0,2')) {
+      editFormElem.querySelector('#jscEditTaskPanelInputCompletion').value = taskData.completion;
+    }
+  }
 
   /**
    * Refresh header panel.

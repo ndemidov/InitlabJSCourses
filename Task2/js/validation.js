@@ -53,7 +53,15 @@ var VALIDATE = (function(vl) {
    */
   function validateStatus(status) {
     var statusRegex = /^[0-2]{1}$/;
-    return statusRegex.text(status);
+    return statusRegex.test(status);
+  }
+
+  /**
+   * Validate status.
+   */
+  function validateCompletion(completion) {
+    var possibleCompletions = ['0', '10', '20', '30', '40', '50', '60', '70', '80', '90', '100'];
+    return UTILS.inArray(possibleCompletions, completion);
   }
 
   /**
@@ -71,6 +79,14 @@ var VALIDATE = (function(vl) {
             composedDate.getFullYear() == y;
   }
 
+  /**
+   * Validate comment.
+   */
+  function validateComment(comment) {
+    var commentRegex = /^[a-zA-Z0-9\s!?*,.()]{1,300}$/;
+    return commentRegex.test(comment);
+  }
+
   vl.username = validateUsername;
   vl.userId = validateUserId;
   vl.title = validateTitle;
@@ -78,7 +94,9 @@ var VALIDATE = (function(vl) {
   vl.estimated = validateEstimated;
   vl.priority = validatePriority;
   vl.status = validateStatus;
+  vl.completion = validateCompletion;
   vl.deadline = validateDeadline;
+  vl.comment = validateComment;
 
   return vl;
 })(VALIDATE || {});
